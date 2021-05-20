@@ -9,13 +9,11 @@ const apiKey = 'tyjr5pv8a87cuj2zgy7az57p';
 
 
 function App() {
-
-
+  // useStates here:
   const [season, setSeason] = useState("")
   const [racers, setRacers] = useState([])
 
-
-  // const proxySeason = `https://proxy.hackeryou.com?reqUrl=https://api.sportradar.us/formula1/trial/v2/en/seasons.json?api_key=tyjr5pv8a87cuj2zgy7az57p`
+  // Season URL and Proxy here:
   const seasonUrl = 'https://api.sportradar.us/formula1/trial/v2/en/seasons.json'
   const proxySeason = new URL('https://proxy.hackeryou.com');
   proxySeason.search = new URLSearchParams({
@@ -23,16 +21,15 @@ function App() {
     "params[api_key]": apiKey
   });
 
+  // Summary URL and Proxy here:
   const summaryUrl = `https://api.sportradar.us/formula1/trial/v2/en/sport_events/${season}/summary.json`
-
   const proxySummary = new URL('https://proxy.hackeryou.com');
   proxySummary.search = new URLSearchParams({
     reqUrl: summaryUrl,
     "params[api_key]": apiKey
   });
 
-  // const proxySummary = `https://proxy.hackeryou.com?reqUrl=https://api.sportradar.us/formula1/trial/v2/en/sport_events/${season}/summary.json?api_key=tyjr5pv8a87cuj2zgy7az57p`
-
+  // 2 useEffect's with a fetch in each one, second dependancy calling on the change of 'season' from first fetch:
   useEffect(() => {
 
     // Fetch the url and Grab response for the seasons
@@ -54,87 +51,59 @@ function App() {
 
   useEffect(() => {
     if (season) {
-
-      fetch(proxySummary)
-        .then(function (summaryResponse) {
-          return summaryResponse.json()
-        })
-
-        .then(function (summarySecondResponse) {
-          const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
-            return {
-              id: racer.id,
-              name: racer.name,
-              points: racer.result.points,
-              carNumber: racer.result.car_number,
-              position: racer.result.position,
-              teamName: racer.team.name
-            }
+      setTimeout(() => {
+        fetch(proxySummary)
+          .then(function (summaryResponse) {
+            return summaryResponse.json()
           })
-          setRacers(localRacers)
-        })
+
+          .then(function (summarySecondResponse) {
+            const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
+              return {
+                id: racer.id,
+                name: racer.name,
+                points: racer.result.points,
+                carNumber: racer.result.car_number,
+                position: racer.result.position,
+                teamName: racer.team.name
+
+              }
+            })
+            setRacers(localRacers)
+          })
+      }, 1000
+      )
+
+
+
 
     }
   }, [season])
-  // setTimeout(() => {
-  //   fetch(proxySummary)
-  //   .then(function (summaryResponse) {
-  //     return summaryResponse.json()
-  //   })
-
-  //   .then(function (summarySecondResponse) {
-  //     const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
-  //       return {
-  //         id: racer.id,
-  //         name: racer.name,
-  //         points: racer.result.points,
-  //         carNumber: racer.result.car_number,
-  //         position: racer.result.position,
-  //         teamName: racer.team.name
-  //       }
-  //     })
-  //     setRacers(localRacers)
-  //   })}, 3000)
-
-
-  // fetch(proxySummary)
-  //   .then(function (summaryResponse) {
-  //     return summaryResponse.json()
-  //   })
-
-  //   .then(function (summarySecondResponse) {
-  //     const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
-  //       return {
-  //         id: racer.id,
-  //         name: racer.name,
-  //         points: racer.result.points,
-  //         carNumber: racer.result.car_number,
-  //         position: racer.result.position,
-  //         teamName: racer.team.name
-  //       }
-  //     })
-  //     setRacers(localRacers)
-  //   })
-
-
-
-
-  // .then(function () => {})
-
-  // console.log("This is the seasons", seasons)
-  // Store the season for 2021 in a variable
-
-
-
-
 
   return (
     <Fragment>
       <div className="wrapper">
-        <h1>F1 Standings</h1>
-        {
-          racers.length ? <Players racers={racers} /> : <h2>Loading please wait..</h2>
-        }
+        <header>
+          <h1>F1 Standings</h1>
+        </header>
+        <ol>
+          {
+            racers.map((piece) => {
+              return (
+                <Players
+                  key={piece.id}
+                  name={piece.name}
+                  points={piece.points}
+                  carNumber={piece.carNumber}
+                  position={piece.position}
+                  teamName={piece.teamName}
+                />
+
+              )
+            })
+
+          }
+        </ol>
 
       </div>
     </Fragment>
