@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import Players from './Players.js'
 
 // URL EndPoints listed below:
-const apiKey = 'tyjr5pv8a87cuj2zgy7az57p';
+const apiKey = 'qq6tpe2qffsmqd78jz8ghghv';
 // const url = new URL('https://api.sportradar.us/formula1/trial/v2/en/competitors');
 
 
@@ -12,6 +12,7 @@ function App() {
   // useStates here:
   const [season, setSeason] = useState("")
   const [racers, setRacers] = useState([])
+  const [seasons, setSeasons] = useState([])
 
   // Season URL and Proxy here:
   const seasonUrl = 'https://api.sportradar.us/formula1/trial/v2/en/seasons.json'
@@ -37,14 +38,17 @@ function App() {
       .then(response => response.json())
       .then(function (secondResponse) {
 
-        const seasons = secondResponse.stages.map((year) => {
+        const seasonsArray = secondResponse.stages.map((year) => {
           return {
             id: year.id,
             description: year.description
           }
         })
-        const year2021 = seasons[0].id
-        setSeason(year2021)
+        console.log(seasonsArray)
+        setSeasons(seasonsArray)
+        // Set season is here, commenting temporarily
+        // const year2021 = seasons[0].id
+        // setSeason(year2021)
       })
   }, []);
 
@@ -58,6 +62,7 @@ function App() {
           })
 
           .then(function (summarySecondResponse) {
+            console.log(summarySecondResponse)
             const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
               return {
                 id: racer.id,
@@ -65,8 +70,8 @@ function App() {
                 points: racer.result.points,
                 carNumber: racer.result.car_number,
                 position: racer.result.position,
-                teamName: racer.team.name
-
+                // To be mentioned as tech challenge:
+                // teamName: racer.team.name
               }
             })
             setRacers(localRacers)
@@ -74,18 +79,40 @@ function App() {
       }, 1000
       )
 
-
-
-
     }
   }, [season])
+
+  const handleChange = (event) => {
+    event.preventDefault();
+    // console.log(event.target)
+    setSeason(event.target.value)
+  }
+
 
   return (
     <Fragment>
       <div className="wrapper">
         <header>
           <h1>F1 Standings</h1>
+
+          <p className="desc">This application allows you to look at past and current statistics of drivers in formula 1! All you need to do to access information on drivers is to select a year from the drop down menu and they will appear to you!</p>
         </header>
+
+        <form action="">
+          <select name="year" id="season" onChange={handleChange}>
+            <option disabled selected>Select a year:</option>
+            {
+              seasons.map((year) => {
+                console.log("The value of year:", year)
+                return (
+                  <option value={year.id}>{year.description}</option>
+                )
+              })
+            }
+          </select>
+
+        </form>
+
         <ol>
           {
             racers.map((piece) => {
@@ -96,7 +123,7 @@ function App() {
                   points={piece.points}
                   carNumber={piece.carNumber}
                   position={piece.position}
-                  teamName={piece.teamName}
+                  // teamName={piece.teamName}
                 />
 
               )
