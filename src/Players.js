@@ -1,24 +1,12 @@
 // Seasons
 const Players = (props) => {
-    const { racers } = props
+    const { name, teamName, carNumber, position, points } = props
     return (
-        <div>
-            <ol>
-                {
+        <li>
+            <div className={`${teamName} teamImg`}></div>
+            {`${position} - ${name} - ${teamName} - ${carNumber} - ${points ? points : 0}`}
 
-                    racers.map((racer) => {
-                        return (
-
-                            <li>
-                                {`${racer.name} - ${racer.teamName} - ${racer.carNumber}`}
-                            </li>
-
-
-                        )
-                    })
-                }
-            </ol>
-        </div>
+        </li>
     )
 }
 
