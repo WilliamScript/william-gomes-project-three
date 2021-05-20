@@ -59,6 +59,7 @@ function App() {
 
           .then(function (summarySecondResponse) {
             const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
+              console.log(summarySecondResponse)
               return {
                 id: racer.id,
                 name: racer.name,
@@ -66,7 +67,6 @@ function App() {
                 carNumber: racer.result.car_number,
                 position: racer.result.position,
                 teamName: racer.team.name
-
               }
             })
             setRacers(localRacers)
@@ -79,6 +79,8 @@ function App() {
 
     }
   }, [season])
+  console.log(season)
+
 
   return (
     <Fragment>
@@ -86,6 +88,12 @@ function App() {
         <header>
           <h1>F1 Standings</h1>
         </header>
+        
+        <select name="year" id="season">
+
+        
+        </select>
+
         <ol>
           {
             racers.map((piece) => {
