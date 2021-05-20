@@ -69,8 +69,34 @@ li {
     z-index: -10;
 }
 
+.desc {
+    border: 4px solid #000;
+    border-radius: 20px;
+    padding: 10px 25px;
+    color: red;
+    font-weight: 700;
+    margin-top: 10px;
+    list-style: none;
+    background-color: rgb(216, 216, 216);
+    display: flex;
+    position: relative;
+    z-index: -10;
+}
+
 p {
     margin-top:5px;
+}
+
+.extraInfo {
+    
+    color: black;
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.extraInfo p {
+    padding-left: 20px;
 }
 
 /* Team Names to style */
@@ -137,3 +163,45 @@ p {
     margin: 0;
 }
 
+/* Media Queries */
+
+@media (max-width:950px) {
+    .extraInfo {
+        padding-left: 20px;
+        color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .teamAndName .racerName {
+    font-size: 25px;
+    margin: 0;
+}
+
+h1{
+    padding: 0;
+}
+}
+
+@media (max-width:450px) {
+    .position{
+        background-color: rgba(255, 255, 255, 0);
+        color: rgba(255, 255, 255, 0);
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    .teamAndName .racerName {
+    font-size: 16px;
+    margin: 0;
+}
+
+.extraInfo {
+        padding-left: 14px;
+        color: black;
+    }
+
+}
