@@ -2,11 +2,7 @@ import './App.css';
 import { Fragment, useEffect, useState } from 'react'
 import Players from './Players.js'
 
-// URL EndPoints listed below:
 const apiKey = 'qq6tpe2qffsmqd78jz8ghghv';
-// const url = new URL('https://api.sportradar.us/formula1/trial/v2/en/competitors');
-
-
 
 function App() {
   // useStates here:
@@ -37,18 +33,16 @@ function App() {
     fetch(proxySeason)
       .then(response => response.json())
       .then(function (secondResponse) {
-
+        // Mapping over seasons endpoint
         const seasonsArray = secondResponse.stages.map((year) => {
+          // Saving the year id for second fetch call, Saving description for options dropdown
           return {
             id: year.id,
             description: year.description
           }
         })
-        console.log(seasonsArray)
+        // Set season is here:
         setSeasons(seasonsArray)
-        // Set season is here, commenting temporarily
-        // const year2021 = seasons[0].id
-        // setSeason(year2021)
       })
   }, []);
 
@@ -60,25 +54,25 @@ function App() {
           .then(function (summaryResponse) {
             return summaryResponse.json()
           })
-
           .then(function (summarySecondResponse) {
             console.log(summarySecondResponse)
-            const localRacers = summarySecondResponse.stage.competitors.map((racer) => {
+            // Mapping through season summary url to grab specific data for the app.
+            const localRacers = summarySecondResponse.stage.competitors.map((racer, index) => {
+              console.log("The index1:", index)
               return {
                 id: racer.id,
                 name: racer.name,
-                points: racer.result.points,
-                carNumber: racer.result.car_number,
-                position: racer.result.position,
-                // To be mentioned as tech challenge:
-                // teamName: racer.team.name
+                points: racer.result ? racer.result.points : "No Data",
+                carNumber: racer.result ? racer.result.car_number : "No Data",
+                position: index + 1,
+                teamName: racer.team ? racer.team.name : null
               }
             })
             setRacers(localRacers)
           })
+          // Set timeout so that api calls are not too close together otherwise it causes an error with the api
       }, 1000
       )
-
     }
   }, [season])
 
@@ -87,7 +81,6 @@ function App() {
     // console.log(event.target)
     setSeason(event.target.value)
   }
-
 
   return (
     <Fragment>
@@ -101,16 +94,16 @@ function App() {
         <form action="">
           <select name="year" id="season" onChange={handleChange}>
             <option disabled selected>Select a year:</option>
+
             {
               seasons.map((year) => {
-                console.log("The value of year:", year)
                 return (
                   <option value={year.id}>{year.description}</option>
                 )
               })
             }
-          </select>
 
+          </select>
         </form>
 
         <ol>
@@ -118,17 +111,16 @@ function App() {
             racers.map((piece) => {
               return (
                 <Players
-                  key={piece.id}
+                  id={piece.id}
                   name={piece.name}
                   points={piece.points}
                   carNumber={piece.carNumber}
                   position={piece.position}
-                  // teamName={piece.teamName}
+                  teamName={piece.teamName}
                 />
 
               )
             })
-
           }
         </ol>
 
